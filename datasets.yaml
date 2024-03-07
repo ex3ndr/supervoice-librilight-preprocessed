@@ -1,0 +1,14 @@
+datasets:
+  - lj-speech-1.1
+  - vctk-corpus-0.92
+  - libritts-r
+  - libritts-r@clean-100
+  - libritts-r@clean-360
+  - libritts-r@other-500
+  - esd
+  - musan
+  - voxceleb-1
+  - voxceleb-1@full
+  - name: librilight
+    source: https://shared.korshakov.com/datasets/librilight/small.tar
+    format: tar
