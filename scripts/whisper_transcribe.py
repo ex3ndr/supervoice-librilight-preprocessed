@@ -6,6 +6,7 @@ from tqdm import tqdm
 
 model = None
 processor = None
+prompt = None
 
 def process_batch(args):
 
@@ -18,17 +19,24 @@ def process_batch(args):
     # Load model
     global model
     global processor
+    global prompt
     if model is None:
         print("Loading model...")
-        processor = WhisperProcessor.from_pretrained("distil-whisper/distil-large-v2")
-        model = WhisperForConditionalGeneration.from_pretrained("distil-whisper/distil-large-v2", torch_dtype=torch.float16).to(device)
+        model_name = "distil-whisper/distil-large-v2"
+        processor = WhisperProcessor.from_pretrained(model_name)
+        model = WhisperForConditionalGeneration.from_pretrained(model_name, torch_dtype=torch.float16).to(device)
+        # prompt = processor.get_prompt_ids("Audiobook transcribing, correctly. From LibriVox, public domain. ")
 
     # Load spectogram
     input_features = torch.load(str(file), map_location = device).half()
     input_features = torch.nn.functional.pad(input_features, (0, 3000 - input_features.shape[2]), "constant", 0)
 
     # Predict
-    predicted_ids = model.generate(input_features)
+    predicted_ids = model.generate(input_features, prompt_ids = prompt)
+    if prompt is not None:
+        predicted_ids.squeeze_(0)
+        predicted_ids = predicted_ids[len(prompt):]
+        predicted_ids.unsqueeze_(0)
 
     # Decode
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
@@ -47,7 +55,8 @@ def main():
     text_files = [str(f) for f in text_files]
 
     # Unprocessed files
-    feature_files_pending = [f for f in feature_files if f.replace(".pt", ".txt") not in text_files]
+    # feature_files_pending = [f for f in feature_files if f.replace(".pt", ".txt") not in text_files]
+    feature_files_pending = feature_files
     print("Unprocessed files:", len(feature_files_pending), "out of", len(feature_files))
 
     # Start processing

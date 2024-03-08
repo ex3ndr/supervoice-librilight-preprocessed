@@ -52,7 +52,7 @@ def process_features(args):
     log_spec = (log_spec + 4.0) / 4.0
 
     # Save
-    torch.save(log_spec, file.replace(".flac", ".pt"))
+    torch.save(log_spec.half(), file.replace(".flac", ".pt"))
     
 
 def main():
@@ -67,6 +67,7 @@ def main():
 
     # Filter flac_files that have pt file next to it with the same name
     filtered_flac_files = [flac_file for flac_file in flac_files if flac_file.replace(".flac", ".pt") not in pt_files]
+    # filtered_flac_files = flac_files
     print("Unprocessed files:", len(filtered_flac_files), "out of", len(flac_files))
 
     # Start processing
