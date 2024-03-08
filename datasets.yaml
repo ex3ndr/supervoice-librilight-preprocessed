@@ -9,6 +9,4 @@ datasets:
   - musan
   - voxceleb-1
   - voxceleb-1@full
-  - name: librilight
-    source: https://shared.korshakov.com/datasets/librilight/small.tar
-    format: tar
+  - librilight
