@@ -53,10 +53,11 @@ def main():
 
     text_files = list(Path("/data/notebooks/supervoice-codec/datasets").rglob("*.txt"))
     text_files = [str(f) for f in text_files]
+    text_files = set(text_files)
 
     # Unprocessed files
-    # feature_files_pending = [f for f in feature_files if f.replace(".pt", ".txt") not in text_files]
-    feature_files_pending = feature_files
+    feature_files_pending = [f for f in feature_files if f.replace(".pt", ".txt") not in text_files]
+    # feature_files_pending = feature_files
     print("Unprocessed files:", len(feature_files_pending), "out of", len(feature_files))
 
     # Start processing

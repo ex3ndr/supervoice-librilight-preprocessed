@@ -64,6 +64,7 @@ def main():
     flac_files = [str(f) for f in flac_files]
     pt_files = [str(f) for f in pt_files]
     flac_files.sort()
+    pt_files = set(pt_files)
 
     # Filter flac_files that have pt file next to it with the same name
     filtered_flac_files = [flac_file for flac_file in flac_files if flac_file.replace(".flac", ".pt") not in pt_files]

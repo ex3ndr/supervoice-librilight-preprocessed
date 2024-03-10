@@ -1,3 +1,4 @@
 datasets
 external_datasets
 .mfa
+.env
