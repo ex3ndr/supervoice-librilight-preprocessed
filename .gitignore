@@ -2,3 +2,4 @@ datasets
 external_datasets
 .mfa
 .env
+.ipynb_checkpoints

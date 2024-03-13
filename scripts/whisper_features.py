@@ -59,8 +59,8 @@ def main():
 
     # Load files
     print("Loading files...")
-    flac_files = list(Path("/data/notebooks/supervoice-codec/datasets").rglob("*.flac"))
-    pt_files = list(Path("/data/notebooks/supervoice-codec/datasets").rglob("*.pt"))
+    flac_files = list(Path("./datasets").rglob("*.flac"))
+    pt_files = list(Path("./datasets").rglob("*.pt"))
     flac_files = [str(f) for f in flac_files]
     pt_files = [str(f) for f in pt_files]
     flac_files.sort()
@@ -76,11 +76,11 @@ def main():
 
     # Process the found files
     with multiprocessing.Manager() as manager:
-            files = manager.list(filtered_flac_files)
-            args_list = [(files, i) for i in range(len(files))]
-            with multiprocessing.Pool(processes=workers_count) as pool:
-                for result in tqdm(pool.imap_unordered(process_features, args_list, chunksize = 16), total=len(files)):
-                    pass
+        files = manager.list(filtered_flac_files)
+        args_list = [(files, i) for i in range(len(files))]
+        with multiprocessing.Pool(processes=workers_count) as pool:
+            for result in tqdm(pool.imap_unordered(process_features, args_list, chunksize = 16), total=len(files)):
+                pass
 
 if __name__ == "__main__":
     main()
