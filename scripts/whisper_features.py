@@ -4,6 +4,7 @@ from transformers import pipeline
 from pathlib import Path
 import multiprocessing
 from tqdm import tqdm
+from _datasets import datasets
 
 melscale_fbank_cache = {}
 def melscale_fbanks(n_mels, n_fft, f_min, f_max, sample_rate, mel_norm, mel_scale, device):
@@ -59,8 +60,11 @@ def main():
 
     # Load files
     print("Loading files...")
-    flac_files = list(Path("./datasets").rglob("*.flac"))
-    pt_files = list(Path("./datasets").rglob("*.pt"))
+    flac_files = []
+    pt_files = []
+    for d in datasets:
+        flac_files += list(Path("./datasets/" + d + "/").rglob("*.flac"))
+        pt_files += list(Path("./datasets/" + d + "/").rglob("*.codec.pt"))
     flac_files = [str(f) for f in flac_files]
     pt_files = [str(f) for f in pt_files]
     flac_files.sort()

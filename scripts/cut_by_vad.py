@@ -14,7 +14,7 @@ def save(seq, fname, index, extension):
     sf.write(file_name, output, samplerate=16000)
 
 
-def cut_sequence(path, vad, path_out, target_len_sec, out_extension):
+def cut_sequence(path, vad, path_out, target_len_sec, hard_target_sec, out_extension):
     data, samplerate = sf.read(path)
 
     assert len(data.shape) == 1
@@ -31,20 +31,33 @@ def cut_sequence(path, vad, path_out, target_len_sec, out_extension):
 
         # if a slice is longer than target_len_sec, we put it entirely in it's own piece
         if length_accumulated + (end - start) > target_len_sec and length_accumulated > 0:
-            save(to_stitch, path_out, i, out_extension)
+            
+            # Check if we should skip the current slice
+            should_skip = False
+            if hard_target_sec is not None and hard_target_sec < length_accumulated:
+                should_skip = True
+            
+            # Save if needed
+            if not should_skip:
+                save(to_stitch, path_out, i, out_extension)
+                i += 1
             to_stitch = []
-            i += 1
             length_accumulated = 0
 
+        # append slice
         to_stitch.append(slice)
         length_accumulated += end - start
 
     if to_stitch:
-        save(to_stitch, path_out, i, out_extension)
+        should_skip = False
+        if hard_target_sec is not None and hard_target_sec < length_accumulated:
+            should_skip = True
+        if not should_skip:
+            save(to_stitch, path_out, i, out_extension)
 
 
 def cut_book(task):
-    path_book, root_out, target_len_sec, extension = task
+    path_book, root_out, target_len_sec, hard_target_sec, extension = task
 
     speaker = pathlib.Path(path_book.parent.name)
 
@@ -57,12 +70,13 @@ def cut_book(task):
         sound_file = meta_file_path.parent / (meta_file_path.stem + '.flac')
 
         path_out = root_out / speaker / book_id / (meta_file_path.stem)
-        cut_sequence(sound_file, vad, path_out, target_len_sec, extension)
+        cut_sequence(sound_file, vad, path_out, target_len_sec, hard_target_sec, extension)
 
 
 def cut(input_dir,
         output_dir,
         target_len_sec=30,
+        hard_target_sec=None,
         n_process=32,
         out_extension='.flac'):
 
@@ -72,7 +86,7 @@ def cut(input_dir,
     print(f"{len(list_dir)} directories detected")
     print(f"Launching {n_process} processes")
 
-    tasks = [(path_book, output_dir, target_len_sec, out_extension) for path_book in list_dir]
+    tasks = [(path_book, output_dir, target_len_sec, hard_target_sec, out_extension) for path_book in list_dir]
 
     with multiprocessing.Pool(processes=n_process) as pool:
         for _ in tqdm.tqdm(pool.imap_unordered(cut_book, tasks), total=len(tasks)):
@@ -87,7 +101,9 @@ def parse_args():
                         help="Path to the input directory", required=True)
     parser.add_argument('--output_dir', type=str, default=None,
                         help="Path to the output directory", required=True)
-
+    parser.add_argument('--hard_target_sec', type=int, default=60,
+                        help="Hard Target time, in seconds of each output sequence"
+                             "(default is None)")
     parser.add_argument('--target_len_sec', type=int, default=60,
                         help="Target time, in seconds of each output sequence"
                              "(default is 60)")
@@ -105,5 +121,4 @@ if __name__ == "__main__":
     args = parse_args()
     pathlib.Path(args.output_dir).mkdir(exist_ok=True, parents=True)
 
-    cut(args.input_dir, args.output_dir, args.target_len_sec,
-        args.n_workers, args.out_extension)
+    cut(args.input_dir, args.output_dir, args.target_len_sec, args.hard_target_sec, args.n_workers, args.out_extension)

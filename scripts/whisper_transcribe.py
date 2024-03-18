@@ -3,6 +3,7 @@ from transformers import pipeline, WhisperProcessor, WhisperForConditionalGenera
 from pathlib import Path
 import multiprocessing
 from tqdm import tqdm
+from _datasets import datasets
 
 model = None
 processor = None
@@ -40,23 +41,25 @@ def process_batch(args):
 
     # Decode
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
-    with open(str(file).replace(".pt", ".txt"), "w") as f:
+    with open(str(file).replace(".whisper.pt", ".txt"), "w") as f:
         f.write(transcription[0].strip())
 
 def main():
 
     # Load files
     print("Loading files...")
-    feature_files = list(Path("/data/notebooks/supervoice-codec/datasets").rglob("*.pt"))
+    text_files = []
+    feature_files = []
+    for d in datasets:
+        flac_files += list(Path("./datasets/" + d + "/").rglob("*.flac"))
+        pt_files += list(Path("./datasets/" + d + "/").rglob("*.whisper.pt"))
     feature_files = [str(f) for f in feature_files]
     feature_files.sort()
-
-    text_files = list(Path("/data/notebooks/supervoice-codec/datasets").rglob("*.txt"))
     text_files = [str(f) for f in text_files]
     text_files = set(text_files)
 
     # Unprocessed files
-    feature_files_pending = [f for f in feature_files if f.replace(".pt", ".txt") not in text_files]
+    feature_files_pending = [f for f in feature_files if f.replace(".whisper.pt", ".txt") not in text_files]
     # feature_files_pending = feature_files
     print("Unprocessed files:", len(feature_files_pending), "out of", len(feature_files))
 
