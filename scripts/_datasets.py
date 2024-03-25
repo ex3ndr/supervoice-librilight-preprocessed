@@ -1,1 +1,1 @@
-datasets = ["librilight"]
+datasets = ["librilight", "librilight-medium"]

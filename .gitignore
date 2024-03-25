@@ -3,3 +3,4 @@ external_datasets
 .mfa
 .env
 .ipynb_checkpoints
+__pycache__

@@ -16,35 +16,35 @@ mfa align "$PWD/datasets/librilight" english_us_mfa english_mfa "$PWD/datasets/l
 # mfa align "$PWD/datasets/librilight-medium" english_us_mfa english_mfa "$PWD/datasets/librilight--mediumaligned" -t "$PWD/.mfa/" -j 64 --use_mp
 
 # Iterate each directory in "$PWD/datasets/librilight-medium"
-for DIR in "$PWD/datasets/librilight-medium"/*; do
+# for DIR in "$PWD/datasets/librilight-medium"/*; do
 
-    # Extract the directory name
-    DIR_NAME=$(basename "$DIR")
+#     # Extract the directory name
+#     DIR_NAME=$(basename "$DIR")
 
-    # Define the ignore list
-    IGNORE_LIST=("2039" "2006")
+#     # Define the ignore list
+#     IGNORE_LIST=("2039" "2006")
 
-    # Check if DIR_NAME is in the ignore list
-    if [[ " ${IGNORE_LIST[@]} " =~ " ${DIR_NAME} " ]]; then
-        # Echo the directory name
-        echo "Skipping $DIR_NAME"
-        continue
-    fi
+#     # Check if DIR_NAME is in the ignore list
+#     if [[ " ${IGNORE_LIST[@]} " =~ " ${DIR_NAME} " ]]; then
+#         # Echo the directory name
+#         echo "Skipping $DIR_NAME"
+#         continue
+#     fi
     
-    # Check if directory "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" does not exist
-    if [ ! -d "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" ]; then
+#     # Check if directory "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" does not exist
+#     if [ ! -d "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" ]; then
 
-        # Echo the directory name
-        echo "Processing $DIR_NAME"
+#         # Echo the directory name
+#         echo "Processing $DIR_NAME"
 
-        # Launch the command in a try-catch block
-        if mfa align "$DIR" english_us_mfa english_mfa "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" -t "$PWD/.mfa/" -j 64 --use_mp --single_speaker --clean; then
-            echo "Alignment successful for $DIR_NAME"
-        else
-            echo "Alignment failed for $DIR_NAME"
-        fi
-    else
-        # Echo the directory name
-        echo "Skipping $DIR_NAME"
-    fi
-done
+#         # Launch the command in a try-catch block
+#         if mfa align "$DIR" english_us_mfa english_mfa "$PWD/datasets/librilight-medium-aligned/$DIR_NAME" -t "$PWD/.mfa/" -j 64 --use_mp --single_speaker --clean; then
+#             echo "Alignment successful for $DIR_NAME"
+#         else
+#             echo "Alignment failed for $DIR_NAME"
+#         fi
+#     else
+#         # Echo the directory name
+#         echo "Skipping $DIR_NAME"
+#     fi
+# done

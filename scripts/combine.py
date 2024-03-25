@@ -10,6 +10,8 @@ def copy_files(args):
     # Soruce files
     src_flac = Path("./datasets/" + dataset).joinpath(id + ".flac")
     src_text = Path("./datasets/" + dataset).joinpath(id + ".txt")
+    src_codec = Path("./datasets/" + dataset).joinpath(id + ".codec.pt")
+    src_speaker = Path("./datasets/" + dataset).joinpath(id + ".speaker.pt")
     src_textgrid = Path("./datasets/" + dataset + "-aligned").joinpath(id + ".TextGrid")
 
     # Destination files
@@ -17,11 +19,15 @@ def copy_files(args):
 
     dst_flac = Path("./datasets/" + dataset + "-processed").joinpath(id + ".flac")
     dst_text = Path("./datasets/" + dataset + "-processed").joinpath(id + ".txt")
+    dst_codec = Path("./datasets/" + dataset + "-processed").joinpath(id + ".codec.pt")
+    dst_speaker = Path("./datasets/" + dataset + "-processed").joinpath(id + ".speaker.pt")
     dst_textgrid = Path("./datasets/" + dataset + "-processed").joinpath(id + ".TextGrid")
 
     # Copy files
     dst_flac.write_bytes(src_flac.read_bytes())
     dst_text.write_bytes(src_text.read_bytes())
+    dst_codec.write_bytes(src_codec.read_bytes())
+    dst_speaker.write_bytes(src_speaker.read_bytes())
     dst_textgrid.write_bytes(src_textgrid.read_bytes())
 
 def process_textgrid(args):
@@ -39,6 +45,8 @@ def main(dataset):
     print("Loading files...")
     flac_files = list(Path("./datasets/" + dataset).rglob("*.flac"))
     text_files = list(Path("./datasets/" + dataset).rglob("*.txt"))
+    codec_files = list(Path("./datasets/" + dataset).rglob("*.codec.pt"))
+    speaker_files = list(Path("./datasets/" + dataset).rglob("*.speaker.pt"))
     textgrid_files = list(Path("./datasets/" + dataset + "-aligned").rglob("*.TextGrid"))
 
     # Filter text files
@@ -58,10 +66,12 @@ def main(dataset):
     # textgrid_files = set([str(file.with_suffix("").relative_to("./datasets/" + dataset + "-aligned")) for file in textgrid_files])
     flac_files = set([str(file.with_suffix("").relative_to("./datasets/" + dataset)) for file in flac_files])
     text_files = set([str(file.with_suffix("").relative_to("./datasets/" + dataset)) for file in text_files])
-    all_files = flac_files.intersection(text_files, set(textgrid_files))
+    codec_files = set([str(file.with_suffix("").with_suffix("").relative_to("./datasets/" + dataset)) for file in codec_files])
+    speaker_files = set([str(file.with_suffix("").with_suffix("").relative_to("./datasets/" + dataset)) for file in speaker_files])
+    all_files = flac_files.intersection(text_files, set(textgrid_files), codec_files, speaker_files)
     all_files = list(all_files)
     all_files.sort()
-    valid_files = flac_files.intersection(text_files, textgrid_filtered_files)
+    valid_files = flac_files.intersection(text_files, textgrid_filtered_files, codec_files, speaker_files)
     valid_files = list(valid_files)
     valid_files.sort()
 

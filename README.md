@@ -4,7 +4,7 @@ This is a preprocessed `librilight` dataset with ASR using Whisper Large model a
 
 ## Dataset Structure
 
-Structure is similar to original dataset. Each file is represented in three formats: `.flac` with audio, `.txt` with text and `.TextGrid` with alignment. Top level folders are speakers, next one is a session and then the files split into up to `16 seconds`.
+Structure is similar to original dataset. Each file is represented in three formats: `.flac` with audio, `.txt` with text, `.TextGrid` with alignment, `.speaker.pt` for FACodec speaker embedding, `.codec.pt` for FACodec codes. Top level folders are speakers, next one is a session and then the files split into up to `30 seconds` with rougtly `15 seconds` on average.
 
 ## Reproduction
 

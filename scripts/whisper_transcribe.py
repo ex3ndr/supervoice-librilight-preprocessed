@@ -51,8 +51,8 @@ def main():
     text_files = []
     feature_files = []
     for d in datasets:
-        flac_files += list(Path("./datasets/" + d + "/").rglob("*.flac"))
-        pt_files += list(Path("./datasets/" + d + "/").rglob("*.whisper.pt"))
+        text_files += list(Path("./datasets/" + d + "/").rglob("*.txt"))
+        feature_files += list(Path("./datasets/" + d + "/").rglob("*.whisper.pt"))
     feature_files = [str(f) for f in feature_files]
     feature_files.sort()
     text_files = [str(f) for f in text_files]
