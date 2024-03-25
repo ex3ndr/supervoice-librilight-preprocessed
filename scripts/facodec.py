@@ -68,7 +68,7 @@ def main():
 
     # Load files
     print("Loading files...")
-    directories = ["./datasets/librilight/"]
+    directories = ["./datasets/librilight-medium/"]
     flac_files = []
     pt_files = []
     for d in directories:
