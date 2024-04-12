@@ -11,3 +11,4 @@ datasets:
   - voxceleb-1@full
   - librilight
   - librilight@medium
+  - librilight@large
