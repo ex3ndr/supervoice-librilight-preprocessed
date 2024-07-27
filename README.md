@@ -2,6 +2,9 @@
 
 This is a preprocessed `librilight` dataset with ASR using Whisper Large model and then aligned with montreal forced aligner.
 
+> [!WARNING]  
+> This attempt of building a good large aligned dataset failed due to too low quality of whisper ASR for such task. Use libriheavy instead.
+
 ## Dataset Structure
 
 Structure is similar to original dataset. Each file is represented in three formats: `.flac` with audio, `.txt` with text, `.TextGrid` with alignment. Top level folders are speakers, next one is a session and then the files split into up to `30 seconds` with rougtly `15 seconds` on average.
